@@ -1,4 +1,4 @@
-#some documentation
+﻿#some documentation
 #https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.xlfileformat?view=excel-pia
 #https://stackoverflow.com/questions/39376896/vba-vbproject-vbcomponents-itemthisworkbook-codemodule-addfromstring-isnt
 #https://docs.microsoft.com/en-us/office/vba/api/excel.application.automationsecurity
@@ -9,7 +9,11 @@
 $excel = New-Object -ComObject Excel.Application
 $excel.Application.EnableEvents = $false
 $excel.Application.AutomationSecurity = 3
-$FilePath = "C:\Users\McMau\code\powershell\VBARecompile\Knjigovodstvo Fullhand 011.xlsm"
+$FilePath = "\\172.24.48.2\Šabloni\Zajednički folder\Zajednički folder\Knjigovodstvo TEST\Knile_Temp_Folder\Knjigovodstvo Fullhand 011.xlsm"
+
+if(-not (Test-Path -Path $FilePath)) {
+    return
+}
 
 $code = @"
 Sub test()
