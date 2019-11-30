@@ -4,13 +4,24 @@
 #https://docs.microsoft.com/en-us/office/vba/api/excel.application.automationsecurity
 #https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-basic-6/aa443946(v=vs.60)
 
-# $FilePath = "C:\Users\McMau\code\powershell\VBARecompile\Knjigovodstvo Fullhand 011.xlsm"
+function Open-File {
+    param (
+        $filePath
+    )
+    Add-Type -AssemblyName System.Windows.Forms
+    #use your DesktopFolder or w/e
+    $initDir = [System.Environment]::GetFolderPath('Desktop')
+    $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{InitialDirectory = $initDir}
+    $FileBrowser.ShowDialog()
+    return $FileBrowser.FileName
+}
+
 
 $excel = New-Object -ComObject Excel.Application
 $excel.Application.EnableEvents = $false
 $excel.Application.AutomationSecurity = 3
-$FilePath = "\\172.24.48.2\Šabloni\Zajednički folder\Zajednički folder\Knjigovodstvo TEST\Knile_Temp_Folder\Knjigovodstvo Fullhand 011.xlsm"
-
+#$FilePath = "\\172.24.48.2\Šabloni\Zajednički folder\Zajednički folder\Knjigovodstvo TEST\Knile_Temp_Folder\Knjigovodstvo Fullhand 011.xlsm"
+$FilePath = Open-File
 if(-not (Test-Path -Path $FilePath)) {
     return
 }
