@@ -20,7 +20,7 @@ function Open-File {
 $excel = New-Object -ComObject Excel.Application
 $excel.Application.EnableEvents = $false
 $excel.Application.AutomationSecurity = 3
-#$FilePath = "\\172.24.48.2\Šabloni\Zajednički folder\Zajednički folder\Knjigovodstvo TEST\Knile_Temp_Folder\Knjigovodstvo Fullhand 011.xlsm"
+
 $FilePath = Open-File
 if(-not (Test-Path -Path $FilePath)) {
     return
@@ -53,15 +53,17 @@ if($TestModuleFound) {
     $xlmodule.CodeModule.AddFromString($code)
 } else {
 
-    #if module test does not exists we crete one and add some lines of dummy code to it which cases project to recompile and file will work
-    # Add(1) for module
-    # Add(2) for class I believe
-    # add(3) for for UserForm
+    #if module test does not exists we crete one and add some lines of dummy code to it which causes project to recompile and file will work
+    # .Add(1) for module
+    # .Add(2) for class I believe
+    # .Add(3) for for UserForm
     $workbook.VBProject.VBComponents.Add(1).Name = "Test"
     $xlmodule = $workbook.VBProject.VBcomponents.item('Test')
     $xlmodule.CodeModule.AddFromString($code);
 }
-#save as 52 so it can be saved as macro enabled file
+#save as 52 so it is saved as macro enabled file
+#TODO: make excel automatically overwrite the file, at the moment it pops up overwrite message where you need to click yes
+#TODO: find a better way to release COM object
 $workbook.SaveAs($FilePath,52)
 $excel.Application.EnableEvents = $true
 $excel.Application.AutomationSecurity = 1
