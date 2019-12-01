@@ -9,6 +9,7 @@ function Open-File {
     #use your DesktopFolder or w/e
     $initDir = [System.Environment]::GetFolderPath('Desktop')
     $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{InitialDirectory = $initDir}
+    #if | Out-Null is not used here, functions returns array with OK and FileName
     $FileBrowser.ShowDialog() | Out-Null
     $filePath = $FileBrowser.FileName
     return $filePath
