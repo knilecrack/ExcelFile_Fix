@@ -1,7 +1,7 @@
 # ExcelFile_Fix
 Simple PowerShell script that fixes the issue with macro-enabled Excel files.
 
-### As there is no fix for this issue for more than a year, I got tired of manually having to open Excel in safemode, choose file and add simple comment, recompile and save file
+As there is no fix for this issue for more than a year, I got tired of manually having to open Excel in safemode, choose file and add simple comment, recompile and save file
 
 
 ### It fixes these kind of issues
