@@ -20,8 +20,6 @@ function Release-Ref($ref) {
     [System.GC]::WaitForPendingFinalizers()
 }
 
-
-
 $excel = New-Object -ComObject Excel.Application
 $excel.Application.EnableEvents = $false
 $excel.DisplayAlerts = $false
@@ -58,7 +56,6 @@ if($TestModuleFound) {
     $xlmodule.CodeModule.DeleteLines(1,3)
     $xlmodule.CodeModule.AddFromString($code)
 } else {
-
     #if module test does not exists we crete one and add some lines of dummy code to it which causes project to recompile and file will work
     # .Add(1) for module
     # .Add(2) for class I believe
@@ -68,8 +65,7 @@ if($TestModuleFound) {
     $xlmodule.CodeModule.AddFromString($code);
 }
 #save as 52 so it is saved as macro enabled file
-#TODO: make excel automatically overwrite the file, at the moment it pops up overwrite message where you need to click yes
-#TODO: find a better way to release COM object
+#TODO: Excel application is not closing automatically, that should be fixed so we don't have to call stop-process
 
 $workbook.SaveAs($FilePath,52)
 $excel.Application.EnableEvents = $true
@@ -77,5 +73,9 @@ $excel.DisplayAlerts = $true
 $excel.Application.AutomationSecurity = 1
 $excel.Workbooks.Close()
 $excel.Application.Quit()
+$excel.Quit()
+#release
 Release-Ref($excel)
-get-process excel | stop-process
+#quit excel as $excel.Quit() does not do the job or I'm stupid
+Get-Process excel | Stop-Process
+Write-Output "Zavrseno."
