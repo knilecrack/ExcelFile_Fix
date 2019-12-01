@@ -5,20 +5,25 @@
 #https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-basic-6/aa443946(v=vs.60)
 
 function Open-File {
-    param (
-        $filePath
-    )
     Add-Type -AssemblyName System.Windows.Forms
     #use your DesktopFolder or w/e
     $initDir = [System.Environment]::GetFolderPath('Desktop')
     $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{InitialDirectory = $initDir}
-    $FileBrowser.ShowDialog()
-    return $FileBrowser.FileName
+    $FileBrowser.ShowDialog() | Out-Null
+    $filePath = $FileBrowser.FileName
+    return $filePath
 }
+function Release-Ref($ref) {
+    [System.Runtime.InteropServices.Marshal]::ReleaseComObject([System.__ComObject]$ref) | Out-Null
+    [System.GC]::Collect()
+    [System.GC]::WaitForPendingFinalizers()
+}
+
 
 
 $excel = New-Object -ComObject Excel.Application
 $excel.Application.EnableEvents = $false
+$excel.DisplayAlerts = $false
 $excel.Application.AutomationSecurity = 3
 
 $FilePath = Open-File
@@ -64,9 +69,12 @@ if($TestModuleFound) {
 #save as 52 so it is saved as macro enabled file
 #TODO: make excel automatically overwrite the file, at the moment it pops up overwrite message where you need to click yes
 #TODO: find a better way to release COM object
+
 $workbook.SaveAs($FilePath,52)
 $excel.Application.EnableEvents = $true
+$excel.DisplayAlerts = $true
 $excel.Application.AutomationSecurity = 1
 $excel.Workbooks.Close()
 $excel.Application.Quit()
+Release-Ref($excel)
 get-process excel | stop-process
